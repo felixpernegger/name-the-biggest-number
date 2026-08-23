@@ -90,7 +90,7 @@ We submit G₁ which is still very big but and too large to write down,
 but doesn't kill the competition -/
 def G (n : ℕ) : ℕ := Nat.iterate F n 4
 
-/-- Submitted by Kim Morrison. -/
+/-- Submitted by Felix Pernegger. -/
 def contender_5 : Nat := G 1
 
 theorem contender_4_lt_contender_5 : contender_4 < contender_5 := by
