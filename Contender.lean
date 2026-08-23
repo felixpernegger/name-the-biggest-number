@@ -13,4 +13,3 @@ def contender_1 : Nat := 42
 
 theorem contender_0_lt_contender_1 : contender_0 < contender_1 := by
   norm_num [contender_0, contender_1]
-

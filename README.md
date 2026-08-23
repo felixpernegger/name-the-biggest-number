@@ -6,6 +6,7 @@ whose precedent and rules we gratefully follow. The initial `0 → 42` ladder fo
 
 Submit a PR adding `contender_N : Nat` and a theorem
 `contender_(N-1)_lt_contender_N : contender_(N-1) < contender_N` to `Contender.lean`.
+CI checks this numbering and these declaration types.
 
 - Contenders must be constructive and computable in principle: no Busy Beavers or the like.
 - No `axiom` and no `sorry`. Mathlib is welcome.

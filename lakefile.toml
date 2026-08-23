@@ -1,6 +1,6 @@
 name = "name_the_biggest_number"
 version = "0.1.0"
-defaultTargets = ["Contender"]
+defaultTargets = ["Contender", "Contract"]
 
 [leanOptions]
 warningAsError = true
@@ -13,3 +13,5 @@ rev = "v4.33.1"
 [[lean_lib]]
 name = "Contender"
 
+[[lean_lib]]
+name = "Contract"
