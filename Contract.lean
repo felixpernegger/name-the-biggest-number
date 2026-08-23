@@ -6,6 +6,14 @@ Authors: Kim Morrison
 import Contender
 import Lean.Elab.Command
 
+/-!
+# Submission format check
+
+This module is a helper that checks whether submissions have been prepared in the expected format.
+It is not intended to be bulletproof, and it does not enforce the spirit of the competition rules.
+Hacking around it does not earn internet points; human review remains authoritative.
+-/
+
 open Lean Lean.Elab Command Meta
 
 private def contenderName (n : Nat) : Name :=
