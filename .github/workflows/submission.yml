@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  statuses: write
 
 jobs:
   submission-format:
@@ -64,11 +65,28 @@ jobs:
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          gh api --method POST "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state=failure \
+            -f context=submission-format \
+            -f description="Append-only submission format failed"
           gh pr close "$PR_NUMBER" --repo "$REPOSITORY" \
             --comment "Closing automatically: this PR does not have the required append-only submission format."
+
+      - name: Publish successful policy status
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh api --method POST "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state=success \
+            -f context=submission-format \
+            -f description="Append-only submission format passed"
 
       - name: Enable squash auto-merge
         if: success() && github.event.pull_request.draft == false
