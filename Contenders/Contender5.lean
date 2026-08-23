@@ -34,7 +34,7 @@ theorem monotone_concatenateNum : StrictMono concatenateNum := by
   · lia
 
 /-- Submitted by Felix Pernegger. -/
-def contender_5 : Nat := concatenateNum 40
+def contender_5 : Nat := concatenateNum 10
 
 theorem contender_4_lt_contender_5 : contender_4 < contender_5 := by
   trans (concatenateNum 3)
