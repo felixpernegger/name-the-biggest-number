@@ -1,0 +1,15 @@
+name = "name_the_biggest_number"
+version = "0.1.0"
+defaultTargets = ["Contender"]
+
+[leanOptions]
+warningAsError = true
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.1"
+
+[[lean_lib]]
+name = "Contender"
+
