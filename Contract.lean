@@ -11,7 +11,7 @@ import Lean.Elab.Command
 
 This module is a helper that checks whether submissions have been prepared in the expected format.
 It is not intended to be bulletproof, and it does not enforce the spirit of the competition rules.
-Hacking around it does not earn internet points; human review remains authoritative.
+Hacking around it does not earn internet points; passing this check does not legitimize shenanigans.
 -/
 
 open Lean Lean.Elab Command Meta

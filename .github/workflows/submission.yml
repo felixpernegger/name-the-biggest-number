@@ -1,0 +1,79 @@
+name: Submission policy
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  submission-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate append-only submission
+        # This privileged job treats PR contents as data and never checks out or runs them.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          submission_policy_dir=$(mktemp -d)
+          trap 'rm -rf "$submission_policy_dir"' EXIT
+
+          gh api --paginate \
+            "repos/${BASE_REPO}/pulls/${PR_NUMBER}/files?per_page=100" \
+            --jq '.[] | [.filename, .status] | @tsv' \
+            | LC_ALL=C sort > "$submission_policy_dir/actual-files"
+
+          gh api "repos/${BASE_REPO}/contents/Contender.lean?ref=${BASE_SHA}" \
+            -H "Accept: application/vnd.github.raw+json" \
+            > "$submission_policy_dir/base-contender"
+          gh api "repos/${HEAD_REPO}/contents/Contender.lean?ref=${HEAD_SHA}" \
+            -H "Accept: application/vnd.github.raw+json" \
+            > "$submission_policy_dir/head-contender"
+
+          last=$(sed -n \
+            's/^import Contenders\.Contender\([0-9][0-9]*\)$/\1/p' \
+            "$submission_policy_dir/base-contender" | tail -n 1)
+          test -n "$last"
+          next=$((last + 1))
+
+          printf '%s\t%s\n' \
+            'Contender.lean' 'modified' \
+            "Contenders/Contender${next}.lean" 'added' \
+            | LC_ALL=C sort > "$submission_policy_dir/expected-files"
+          diff -u "$submission_policy_dir/expected-files" \
+            "$submission_policy_dir/actual-files"
+
+          cp "$submission_policy_dir/base-contender" \
+            "$submission_policy_dir/expected-contender"
+          printf 'import Contenders.Contender%s\n' "$next" \
+            >> "$submission_policy_dir/expected-contender"
+          cmp "$submission_policy_dir/expected-contender" \
+            "$submission_policy_dir/head-contender"
+
+      - name: Close invalid submission
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh pr close "$PR_NUMBER" --repo "$REPOSITORY" \
+            --comment "Closing automatically: this PR does not have the required append-only submission format."
+
+      - name: Enable squash auto-merge
+        if: success() && github.event.pull_request.draft == false
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" --auto --squash

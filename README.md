@@ -4,9 +4,10 @@ Name the biggest natural number you can. This is a Lean reboot of
 [Cody Roux's original Rocq competition](https://github.com/codyroux/name-the-biggest-number),
 whose precedent and rules we gratefully follow. The initial `0 → 42` ladder follows his too.
 
-Submit a PR adding `contender_N : Nat` and a theorem
-`contender_(N-1)_lt_contender_N : contender_(N-1) < contender_N` to `Contender.lean`.
-CI checks this numbering and these declaration types.
+Submit a PR that adds `Contenders/ContenderN.lean`, defining `contender_N : Nat` and
+`contender_(N-1)_lt_contender_N : contender_(N-1) < contender_N`, then append its import
+to `Contender.lean`. Earlier submissions are immutable. Passing PRs merge automatically;
+CI checks the Lean code and the append-only submission format.
 
 - Contenders must be constructive and computable in principle: no Busy Beavers or the like.
 - No `axiom` and no `sorry`. Mathlib is welcome.

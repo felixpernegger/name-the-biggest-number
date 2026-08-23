@@ -14,4 +14,7 @@ rev = "v4.33.1"
 name = "Contender"
 
 [[lean_lib]]
+name = "Contenders"
+
+[[lean_lib]]
 name = "Contract"
