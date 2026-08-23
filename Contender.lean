@@ -8,3 +8,4 @@ import Contenders.Contender1
 import Contenders.Contender2
 import Contenders.Contender3
 import Contenders.Contender4
+import Contenders.Contender5
