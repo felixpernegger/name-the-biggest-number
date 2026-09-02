@@ -14,9 +14,11 @@ def grahamSeq : ℕ → ℕ
 /-- Submitted by Felix Pernegger. -/
 def contender_7 : Nat := grahamSeq 1
 
+theorem contender_7_eq : contender_7 = knuthArrow 3 3 4 := rfl
+
 theorem contender_6_lt_contender_7 : contender_6 < contender_7 := by
-  unfold contender_6 contender_7
-  rw [ack_eq_knuthArrow, grahamSeq, grahamSeq]
+  rw [contender_6, contender_7_eq]
+  rw [ack_eq_knuthArrow]
   dsimp only [Nat.reduceAdd]
   apply lt_of_lt_of_le (b := knuthArrow 2 5 2)
   · simp only [tsub_lt_self_iff, Nat.ofNat_pos, and_true]
